@@ -1,10 +1,13 @@
 # Voting Back-end
 
-The traditional back-end code for Voting. NodeJS + MySQL
+The DApp version back-end code for Voting. NodeJS + MySQL + Block Chain
 
 ### Simple file structure explanation
 
 - src (source code)
+  - contracts (Smart contractors)
+  - migrations (The migration files to help deploying smart contractors)
+  - test (Test code for smart contractors)
   - models (models file)
   - controllers
   - routers (all router file in this folder)
