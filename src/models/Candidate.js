@@ -13,7 +13,7 @@ exports.fetchCandidatesInfo = () => new Promise((resolve, reject) => {
     }
     // Call the smart contractor to get vote amount.
     const newCandidates = results.map(async candidate => {
-      const votes = await BlockChainHelper.countVote(candidate.id);
+      const votes = await BlockChainHelper.countVote(candidate.id.toString());
       return { ...candidate, votes: votes.toNumber() };
     });
     // Need to wait the map function resolve all promise.

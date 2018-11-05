@@ -19,8 +19,8 @@ describe('Candidate', () => {
     expect(error).not.toHaveBeenCalled();
     expect(result).toEqual([{ id: 1, votes: 6 }, { id: 2, votes: 6 }]);
     expect(countVote).toHaveBeenCalledTimes(2);
-    expect(countVote).toHaveBeenNthCalledWith(1, 1);
-    expect(countVote).toHaveBeenLastCalledWith(2);
+    expect(countVote).toHaveBeenNthCalledWith(1, '1');
+    expect(countVote).toHaveBeenLastCalledWith('2');
   });
 
   test('fetchCandidatesInfo with db error', async () => {
