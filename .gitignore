@@ -9,3 +9,4 @@ letsencrypt
 .coveralls.yml
 Information.txt
 .DS_Store
+build
