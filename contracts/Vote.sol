@@ -6,6 +6,7 @@ contract Vote {
         string name;
         string password;
         string photo;
+        // string username;
         uint vote_id;
         bool isExisted;
     }
@@ -23,15 +24,16 @@ contract Vote {
 
     // Adde a new user. In this case, we can use a ssn for the user id to ensure the id will not be duplicated.
     function addUser(string userId, string password, string name, string photo) public {
-        require(isEmptyString(userId) == true, "A user id has to be supplied.");
-        require(isEmptyString(password) == true, "A password id has to be supplied.");
-        require(isEmptyString(name) == true, "A user name has to be supplied.");
-        require(isEmptyString(photo) == true, "A user photo has to be supplied.");
-        require(users[userId].isExisted == true, "The user id has already been taken."); // check whether the same user id has already existed.
+        require(isEmptyString(userId) == false, "A user id has to be supplied.");
+        require(isEmptyString(password) == false, "A password has to be supplied.");
+        require(isEmptyString(name) == false, "A name has to be supplied.");
+        require(isEmptyString(photo) == false, "A photo has to be supplied.");
+        require(users[userId].isExisted == false, "The user id has already been taken."); // check whether the same user id has already existed.
 
         users[userId].password = password;
         users[userId].name = name;
         users[userId].photo = photo;
+        // users[userId].username = userId; // save the user id to username to allow front-end shares code.
         users[userId].isExisted = true;
     }
 
