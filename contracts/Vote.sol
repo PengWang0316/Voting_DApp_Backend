@@ -7,19 +7,19 @@ contract Vote {
         string password;
         string photo;
         // string username;
-        uint vote_id;
+        string vote_id;
         bool isExisted;
     }
     mapping(string => user) users; // Mapping user's id to a user structure.
 
-    mapping(uint => uint) candidates; // Mapping a candidates array to keep the vote number.
+    mapping(string => uint) candidates; // Mapping a candidates array to keep the vote number.
 
     // Use a constructor to initialize the candidates map.
     constructor() public {
         // In reality this candidate struct will be filled by outside inputers.
         // Here we just give them two candidates' ids to simplify the process.
-        candidates[2] = 0;
-        candidates[3] = 0;
+        candidates["2"] = 0;
+        candidates["3"] = 0;
     }
 
     // Adde a new user. In this case, we can use a ssn for the user id to ensure the id will not be duplicated.
@@ -38,17 +38,17 @@ contract Vote {
         users[userId].isExisted = true;
     }
 
-    function fetchUser(string userId) public view returns (string, string, string, string, uint) {
+    function fetchUser(string userId) public view returns (string, string, string, string, string) {
         return (userId, users[userId].name, users[userId].password, users[userId].photo, users[userId].vote_id);
     }
 
-    function vote(uint candidateId, string userId) public {
-        require(users[userId].vote_id == 0, "This user has already voted.");
+    function vote(string candidateId, string userId) public {
+        require(isEmptyString(users[userId].vote_id) == true, "This user has already voted.");
         users[userId].vote_id = candidateId;
         candidates[candidateId] += 1;
     }
 
-    function countVote(uint candidateId) public view returns (uint) {
+    function countVote(string candidateId) public view returns (uint) {
         return candidates[candidateId];
     }
 
