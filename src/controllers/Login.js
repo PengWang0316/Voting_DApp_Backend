@@ -13,7 +13,7 @@ module.exports = (req, res) => fetchOneUser(req.query.username).then(result => {
       name: result[1],
       password: result[2],
       photo: result[3],
-      vote_id: result[4].toNumber(),
+      vote_id: Number(result[4]),
     };
     bcrypt.compare(req.query.password, user.password).then(compareResult => {
       if (compareResult) {

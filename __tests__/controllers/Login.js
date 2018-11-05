@@ -1,7 +1,7 @@
 import LoginController from '../../src/controllers/Login';
 
 jest.mock('bcryptjs', () => ({ compare: jest.fn().mockReturnValue(Promise.resolve(true)) }));
-jest.mock('../../src/models/User', () => ({ fetchOneUser: jest.fn().mockReturnValue(Promise.resolve(['id', 'name', 'hashed password', 'photo', { toNumber: jest.fn().mockReturnValue(0) }])) }));
+jest.mock('../../src/models/User', () => ({ fetchOneUser: jest.fn().mockReturnValue(Promise.resolve(['id', 'name', 'hashed password', 'photo', '0'])) }));
 jest.mock('../../src/utils/Logger', () => ({ error: jest.fn() }));
 jest.mock('../../src/utils/JWTUtil', () => ({ signJWT: jest.fn().mockReturnValue('JWT') }));
 
@@ -23,7 +23,9 @@ describe('Login controller', () => {
     expect(compare).toHaveBeenCalledTimes(1);
     expect(compare).toHaveBeenLastCalledWith(req.query.password, 'hashed password');
     expect(signJWT).toHaveBeenCalledTimes(1);
-    expect(signJWT).toHaveBeenLastCalledWith({ id: 'id', name: 'name', password: 'hashed password', photo: 'photo', vote_id: 0 });
+    expect(signJWT).toHaveBeenLastCalledWith({
+      id: 'id', name: 'name', password: 'hashed password', photo: 'photo', vote_id: 0,
+    });
     expect(res.json).toHaveBeenCalledTimes(1);
     expect(res.json).toHaveBeenLastCalledWith('JWT');
   });
