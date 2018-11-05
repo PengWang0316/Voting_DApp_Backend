@@ -5,18 +5,22 @@ jest.mock('../../src/DBHelper', () => ({
     query: jest.fn().mockImplementation((sql, cb) => cb(null, [{ id: 1 }, { id: 2 }], null)),
   }),
 }));
-
+jest.mock('../../src/utils/BlockChainHelper', () => ({ countVote: jest.fn().mockReturnValue({ toNumber: jest.fn().mockReturnValue(6) }) }));
 jest.mock('../../src/utils/Logger', () => ({ error: jest.fn() }));
 
 describe('Candidate', () => {
   test('fetchCandidatesInfo without error', async () => {
     const { error } = require('../../src/utils/Logger');
     const { getPool } = require('../../src/DBHelper');
+    const { countVote } = require('../../src/utils/BlockChainHelper');
 
     const result = await Candidate.fetchCandidatesInfo();
     expect(getPool).toHaveBeenCalledTimes(1);
     expect(error).not.toHaveBeenCalled();
-    expect(result).toEqual([{ id: 1 }, { id: 2 }]);
+    expect(result).toEqual([{ id: 1, votes: 6 }, { id: 2, votes: 6 }]);
+    expect(countVote).toHaveBeenCalledTimes(2);
+    expect(countVote).toHaveBeenNthCalledWith(1, 1);
+    expect(countVote).toHaveBeenLastCalledWith(2);
   });
 
   test('fetchCandidatesInfo with db error', async () => {
