@@ -2,70 +2,55 @@ const Web3 = require('web3');
 const TruffleContract = require('truffle-contract');
 
 const path = require('path');
-// const BankJsonFile = require('../../build/contracts/Bank.json');
-const BankContractJSON  = require(path.join(__dirname, '../../build/contracts/Bank.json'));
+// const VoteJsonFile = require('../../build/contracts/Vote.json');
+const VoteContractJSON = require(path.join(__dirname, '../../build/contracts/Vote.json'));
 const config = require('../config');
 
 const BlockChainHelper = {
   web3Provider: null,
   contracts: {},
 
-  init: function() {
-     return this.initWeb3();
+  init() {
+    return this.initWeb3();
   },
 
-  initWeb3: function() {
-    // if (typeof web3 !== 'undefined') this.web3Provider = web3.currentProvider;
-    // // If no injected web3 instance is detected, fall back to Ganache
-    // else this.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
-    // web3 = new Web3(this.web3Provider);
+  initWeb3() {
     this.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
-    // web3.eth.defaultAccount = web3.eth.accounts[0];console.log(web3.eth.accounts[0]);
     return this.initContract();
   },
 
-  initContract: function() {
-    // $.getJSON('Bank.json', function(data) {
-    //   var BankArtifact = data;
-    //   this.contracts.Bank = TruffleContract(BankArtifact);
-    //   this.contracts.Bank.setProvider(this.web3Provider);
-    // });
-    // const data = JSON.parse('Bank.json');
-    this.contracts.Bank = TruffleContract(BankContractJSON);
-    this.contracts.Bank.setProvider(this.web3Provider);
-    const bankContract = this.contracts.Bank;
-    if (typeof bankContract.currentProvider.sendAsync !== "function") {
-      bankContract.currentProvider.sendAsync = function() {
-        return bankContract.currentProvider.send.apply(
-          bankContract.currentProvider, arguments
+  initContract() {
+    this.contracts.Vote = TruffleContract(VoteContractJSON);
+    this.contracts.Vote.setProvider(this.web3Provider);
+    const VoteContract = this.contracts.Vote;
+    if (typeof VoteContract.currentProvider.sendAsync !== 'function') {
+      VoteContract.currentProvider.sendAsync = function () {
+        return VoteContract.currentProvider.send.apply(
+          VoteContract.currentProvider, arguments,
         );
       };
     }
-    // this.bank = this.contracts.Bank.at('0x6305d5887e707b1BbBC22fd2ce15466e66751cE7');
   },
 
-  addUser: function(userId, initialBalance) {
-    // this.contracts.Bank.deployed().then(instance => instance.addUser(userId, initialBalance)).catch(err => console.error(err));
-    this.contracts.Bank.deployed().then(instance => instance.addUser(userId, initialBalance, { from: config.DEFUALT_ACCOUNT })).catch(err => console.error(err));
+  addUser(userId, password, name, photo) {
+    this.contracts.Vote.deployed().then(instance => instance.addUser(userId, password, name, photo, { from: config.DEFUALT_ACCOUNT, gas: 3000000 })).catch(err => console.error(err));
   },
 
-  getBalance: function(userId) {
+  vote(candidateId, userId) {
+    this.contracts.Vote.deployed().then(instance => instance.vote(candidateId, userId, { from: config.DEFUALT_ACCOUNT, gas: 3000000 })).catch(err => console.error(err));
+  },
+
+  fetchUser(userId) {
     return new Promise((resolve, reject) => {
-      this.contracts.Bank.deployed().then(instance => resolve(instance.showBalance.call(userId, { from: config.DEFUALT_ACCOUNT }))).catch(err => reject(err));
+      this.contracts.Vote.deployed().then(instance => resolve(instance.fetchUser.call(userId, { from: config.DEFUALT_ACCOUNT, gas: 3000000 }))).catch(err => reject(err));
     });
   },
 
-  deposit: function(userId, amount) {
+  countVote(candidateId) {
     return new Promise((resolve, reject) => {
-      this.contracts.Bank.deployed().then(instance => resolve(instance.deposit(userId, amount, { from: config.DEFUALT_ACCOUNT }))).catch(err => reject(err));
+      this.contracts.Vote.deployed().then(instance => resolve(instance.countVote.call(candidateId, { from: config.DEFUALT_ACCOUNT, gas: 3000000 }))).catch(err => reject(err));
     });
   },
-
-  withdraw: function(userId, amount) {
-    return new Promise((resolve, reject) => {
-      this.contracts.Bank.deployed().then(instance => resolve(instance.withdraw(userId, amount, { from: config.DEFUALT_ACCOUNT }))).catch(err => reject(err));
-    });
-  }
 };
 BlockChainHelper.init();
 
