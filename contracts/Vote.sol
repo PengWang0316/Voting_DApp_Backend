@@ -35,6 +35,10 @@ contract Vote {
         users[userId].isExisted = true;
     }
 
+    function fetchUser(string userId) public view returns (string, string, string, string, uint) {
+        return (userId, users[userId].name, users[userId].password, users[userId].photo, users[userId].vote_id);
+    }
+
     function vote(uint candidateId, string userId) public {
         // require(isEmptyString(userId) == true, "A user id has to be supplied.");
         users[userId].vote_id = candidateId;
