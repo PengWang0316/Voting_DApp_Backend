@@ -33,6 +33,7 @@ contract Vote {
         users[userId].password = password;
         users[userId].name = name;
         users[userId].photo = photo;
+        // users[userId].vote_id = 0;
         // users[userId].username = userId; // save the user id to username to allow front-end shares code.
         users[userId].isExisted = true;
     }
@@ -42,7 +43,7 @@ contract Vote {
     }
 
     function vote(uint candidateId, string userId) public {
-        // require(isEmptyString(userId) == true, "A user id has to be supplied.");
+        require(users[userId].vote_id == 0, "This user has already voted.");
         users[userId].vote_id = candidateId;
         candidates[candidateId] += 1;
     }
